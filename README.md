@@ -14,7 +14,7 @@ community. It's more open than the official Red and Red Code repositories, where
 people can post demos of things they've written in Red, as well as reusable
 functions, libraries, and tools for others to use.
 
-All over the world that are major initiatives to get more and younger children actively programming. Red's virtues of small size, syntax that encourages understandable code and its built in GUI will undoubtedly attract children. Please bear this in mind when submitting any contributions or chatting about them.
+All over the world that are major initiatives to get more and younger children actively programming. Red's virtues of small size, syntax that encourages understandable code and its built-in GUI will undoubtedly attract children. Please bear this in mind when submitting any contributions or chatting about them.
 
 # Organisation
 
@@ -170,13 +170,11 @@ Domain: [dialects debug mysql xml files]
 
 # Disclaimer
 
-The resources here are not guaranteed to be deeply reviewed, and therefore could
+The resources here are not reviewed, and therefore could
 contain harmful data. All downloaded resources should be examined before
 execution to ensure that they are not malicious in intent.
 
-Everything here is provided AS IS without warranty and without liability to the
-author or to FullStack Technologies.
-
+Everything here is provided AS IS without any warranty and without any liability.
 
 Happy Reducing!
 
