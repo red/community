@@ -32,6 +32,9 @@ The submission should include a valid [Red Community Code Header](#Community-Cod
 
 Each entry should have a valid header that includes at least:
 
+### Red header: Author
+The real name of the author must be supplied as a string. 
+
 ### Red header: File
 The name of the script, program, library -- eg %my-script.red, %yet-another-map.red, or %roman-numerals.reds
 
@@ -49,7 +52,7 @@ Should be a valid Red date. It really should be the date of submission to the re
 (Until the date! datatype is available in Red, the date should be enclosed in "s.)
 
 ### Red header: Title
-A short string that descibes the script
+A short string that descibes the script.
 
 ### Red header: Purpose
 A string, possibly multi-line, that briefly describes the script. Purpose is optional, but highly recommended.
