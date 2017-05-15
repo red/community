@@ -65,7 +65,7 @@ mit pd public-domain rvd
 ### Red header: Copyright
 The standard Copyright field should also be used if appropriate. It is optional.
 
-### Red Comm-Code header
+### Red header: Comm-Code
 This is part of the Red or Red/System header. It includes additional information to describe your code. A basic commcode header looks like this:
 
     comm-code: [
@@ -76,7 +76,7 @@ This is part of the Red or Red/System header. It includes additional information
         tested-under: none
     ]
 
-The Comm-code header is optional. You do not need it, but it does help people to more easily find code that is relevant to their needs. 
+The comm-code header is optional. You do not need it, but it does help people to more easily find code that is relevant to their needs. 
 
 ### Comm-Code header: Level
 A single quoted word to say what level of user expertise is embodied in the script. That is, the level of Red understanding that a user should have. It doesn't have anything to do with the domain-specific aspects of an entry. Use any one of:
