@@ -85,9 +85,9 @@ The comm-code header is optional. You do not need it, but it does help people to
 A single quoted word to say what level of user expertise is embodied in the script. That is, the level of Red understanding that a user should have. It doesn't have anything to do with the domain-specific aspects of an entry. Use any one of:
 advanced beginner intermediate
 
-beginner - These should be understandable even to those that are just evaluating REBOL. We don't want to scare off newcomers.
+beginner - These should be understandable even to those that are just evaluating Red. We don't want to scare off newcomers.
 
-intermediate - This assumes a basic working knowledge of REBOL and the ability to use HELP and SOURCE to learn more. Script size isn't as important as complexity. That is to say, scripts can be large as long as they are straight-forward.
+intermediate - This assumes a basic working knowledge of Red and the ability to use HELP and SOURCE to learn more. Script size isn't as important as complexity. That is to say, scripts can be large as long as they are straight-forward.
 
 advanced - Examples of things that fall into this category would be: higher order functions, USE blocks - beyond very obvious usage, BIND, anonymous functions - again beyond very basic usage of the mechanism, dynamic layout generation in View, etc.
 
@@ -103,7 +103,7 @@ Platform: [linux windows *nix]
 
 Platform: 'android
 
-Most scripts will have no platform specified, which means they are expected (though not guaranteed) to work on any platform their target REBOL product runs on.
+Most scripts will have no platform specified, which means they are expected (though not guaranteed) to work on any platform their target Red product runs on.
 
 ### Comm-Code Library header: Type
 Says the type of code, or how it is used. What its purpose is. Can be a lit-word or block. Use any combination of:
@@ -173,9 +173,7 @@ Domain: [dialects debug mysql xml files]
 
 # Disclaimer
 
-The resources here are not reviewed, and therefore could
-contain harmful data. All downloaded resources should be examined before
-execution to ensure that they are not malicious in intent.
+The resources here are not reviewed, and therefore could contain harmful data. All downloaded resources should be examined before execution to ensure that they are not malicious in intent.
 
 Everything here is provided AS IS without any warranty and without any liability.
 
