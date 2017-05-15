@@ -1,5 +1,7 @@
 # Red Community
 
+[![Join the chat at https://gitter.im/red/community](https://badges.gitter.im/red/community.svg)](https://gitter.im/red/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 This is a resource for Red users and members of the community. Generally that
 means software developers of some kind, so you'll find information targeted
 mainly at that audience. But Red can be used by anybody, for many different
