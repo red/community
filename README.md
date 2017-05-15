@@ -26,7 +26,7 @@ A separate Github Pull Request should be made for each script that you wish to s
 
 The scripts should follow the [Red coding style guide](https://github.com/red/red/wiki/Coding-Style-Guide).
 
-The submission should include a valid [Red Community Code Header](#Community-Code-Headers).
+The submission should include a valid [Red Community Code Header](#community-code-headers).
 
 ## Community Code Headers
 
