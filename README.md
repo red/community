@@ -14,6 +14,24 @@ community. It's more open than the official Red and Red Code repositories, where
 people can post demos of things they've written in Red, as well as reusable
 functions, libraries, and tools for others to use.
 
+All over the world that are major initiatives to get more and younger children actively programming. Red's virtues of small size, syntax that encourages understandable code and its built in GUI will undoubtedly attract children. Please bear this in mind when submitting any contributions or chatting about them.
+
+# Organisation
+
+Currently the repository has a very simple structure, one folder for Red code and another for separate Red/System code.
+
+# Submitting Scripts and Code
+
+A separate Github Pull Request should be made for each script that you wish to submit.
+
+The scripts should following the [Red coding style guide](https://github.com/red/red/wiki/Coding-Style-Guide).
+
+The submission should inlcude a valid [Red Community Code Header](#Community-Code-Headers).
+
+## Community Code Headers
+
+To be added.
+
 # Disclaimer
 
 The resources here are not guaranteed to be deeply reviewed, and therefore could
@@ -25,3 +43,5 @@ author or to FullStack Technologies.
 
 
 Happy Reducing!
+
+
