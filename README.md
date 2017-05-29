@@ -9,7 +9,7 @@ purposes. You don't need to be a professional developer to use the resources
 here.
 
 As a resource repository for Red developers, you'll find scripts, tools, demos,
-documenation, tutorials, and more, all contributed by members of the Red
+documentation, tutorials, and more, all contributed by members of the Red
 community. It's more open than the official Red and Red Code repositories, where
 people can post demos of things they've written in Red, as well as reusable
 functions, libraries, and tools for others to use.
