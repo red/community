@@ -1,0 +1,110 @@
+Red [
+	Title:   "Simple GUI livecoding demo"
+	Author:  "Nenad Rakocevic / Didier Cadieu"
+	File: 	 %livecode.red
+	Version: 1.2.1
+	Needs:	 'View
+	Usage:  {
+		Type VID code in the bottom right area, you will see the resulting GUI components
+		rendered live on the left side and fully functional (events/actors/reactors working live).
+		The top right area let you define Red's values to be used in your VID code, even functions or anything.
+	}
+	History: [
+		1.0.0 "01-09-2016"	"First version (Nenad)."
+		1.1.0 "09-09-2016"	"Addition of red code predefinitions area and window resizing (Didier)."
+		1.2.0 "21-09-2016"	"Addition of vertical and horizontal spliters (Didier)."
+		1.2.1 "06-10-2016"	"Correction of vertical spliter resize (Didier)."
+ ]
+ Tabs: 4
+]
+
+context [	; Isolate the code to not missbehave on some reuse of its words by the user code
+	; This handle the resize of window content when it is resized
+	insert-event-func [
+		if event/type = 'resize [
+			sz: mainwin/size - orig
+			pan/size/y: sz/y - pan/offset/y
+			vidcode/size/y: pan/size/y - vidcode/offset/y - orig/y
+			output/size: sz - output/offset
+			splitv/size/y: sz/y - splitv/offset/y
+			'done
+		]
+	]
+
+	; There is a spliter style that does what a splitter must do. Here is the functions it needs.
+	; Initialize the spliter data in regards to its initial content.
+	on-spliter-init: func [face [object!] /local data v sz? op axis] [
+		; init global value
+		face/extra/fixedaxis: select [x y x] face/extra/axis: axis: either face/size/x < face/size/y ['x] ['y]
+		if not block? data: face/data [exit]
+		; Here is updated the face/data block by computing if the value of a move must be added or subtract
+		; to the facet regarding the face position, then store the operator next to the value.
+		forall data [
+			v: copy data/1
+			; search the face! object in the path
+			while [all [not empty? v  not face? get v]] [all [sz?: take/last v  none? find [size offset] sz?  sz?: none]]
+			all [
+				not empty? v
+				v: get v
+				; use 'add or 'substract depends on where it is in regards of the spliter and the property to change
+				op: pick [+ -] (v/offset/:axis > face/offset/:axis) xor (sz? = 'size)
+				insert data: next data op
+			]
+		]
+	]
+
+	; This func does what is needed when a splitter is moved.
+	; The splitter/data block! must contain pairs of "facet operator" values, where :
+	; - "facet" is a face path ending by /size or /offset that must be changed when the splitter move like a-face/size or a-face/offset,
+	; - "operator" is one of '+ or '-, and determines if the move amount is added or subtract to the "facet" value.
+	on-spliter-move: func [face [object!] /local amount fa] [
+		fa: face/extra/fixedaxis
+		face/offset/:fa: face/extra/offset/:fa				; must not move on the fixed axis
+		amount: face/offset - face/extra/offset				; amount of the move since the last move
+		face/extra/offset: face/offset						; store the new offset
+		if any [amount = 0x0 not block? face/data] [exit]
+		foreach [prop op] face/data [
+			do reduce [load rejoin [form prop ":"] prop op amount]			; update the value with the new amount. I miss 'to-set-word here
+		]
+	]
+
+	err-color: 255.180.180
+	orig: 4x4
+
+	view/flags mainwin: layout [
+		title "Red Livecoding"
+		backdrop gray
+		origin orig
+		space 0x0
+
+		style area: area wrap font-name "Fixedsys"
+		style split: base 30x6 loose extra ['offset none 'auto-sync? none 'axis none 'fixedaxis none]
+			on-drag-start [face/extra/offset: face/offset face/extra/auto-sync?: system/view/auto-sync? system/view/auto-sync?: no]	; Need to disable realtime mode as the position is changed by the drag an the code
+			on-drag [on-spliter-move face show face/parent]
+			on-drop [system/view/auto-sync?: face/extra/auto-sync?]	; Don't forget to reset realtime mode to its previous value
+			on-over [face/color: either event/away? [gray][blue]]
+			on-create [on-spliter-init face]
+
+		pan: panel [
+			below
+			origin orig
+			space 0x0
+			text "Values to define before layout :" 200x15
+			redcode: area 500x100 on-key-up [
+				face/color: either error? err: try [any [empty? trim copy face/text do load face/text]][print err err-color][white]
+			]
+			pad 0x4
+
+			; horizontal splitter
+			splith: split 500x6 data [redcode/size vidtit/offset vidcode/offset vidcode/size]
+
+			vidtit: text "Layout code in VID dialect :" 200x15
+			vidcode: area 500x400 wrap font-name "Fixedsys" on-key-up [
+				face/color: either error? err: try [output/pane: layout/only load face/text][print err err-color][white]
+			]
+		]
+		; vertical spliter
+		splitv: split 6x600 data [pan/size splith/size redcode/size vidcode/size output/size output/offset]
+		output: panel 400x600
+	] 'resize
+]
