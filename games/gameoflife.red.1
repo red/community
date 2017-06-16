@@ -1,0 +1,79 @@
+Red [
+    Title: "Conway's Game of Life"
+    Needs: 'View
+    Tabs: 4
+]
+
+grid: collect [repeat i 10 [keep/only collect [repeat j 10 [keep random true]]]]
+scratchgrid: collect [repeat i 10 [keep/only collect [repeat j 10 [keep false]]]]
+
+a: copy grid/1
+b: copy grid/10
+c: collect [keep/only b keep grid keep/only a]
+
+count-neighbors: function [gridd x y][
+	count: 0
+	foreach [h v][
+		(x - 1) (y - 1)
+		(x - 1)  y
+		(x - 1) (y + 1)
+		 x      (y - 1)
+		 x      (y + 1)
+		(x + 1)  y
+		(x + 1) (y - 1)
+		(x + 1) (y + 1)
+	][
+		if gridd/(do h)/(do v) [count: count + 1]
+	]
+	;?? count
+	count
+]
+
+iterate: function [] [
+	repeat i 10 [
+		ii: i + 1
+		repeat j 10 [
+			ncount: count-neighbors c ii j
+			scratchgrid/:i/:j: make logic! any [
+				all [c/:ii/:j ncount > 1 ncount < 4]
+				all [not c/:ii/:j ncount = 3]
+			]
+		]
+	]
+]
+
+refresh: function [cmds][
+	clear cmds
+	repeat i 10 [
+		repeat j 10 [
+			insert cell: tail cmds [fill-pen <color> circle <coord> 5]
+			cell/2: pick [red white] scratchgrid/:i/:j
+			cell/4: 10 * as-pair i j
+		]
+	]
+]
+
+sync-grids: [
+    grid: copy scratchgrid
+    
+    clear scratchgrid
+    scratchgrid: collect [repeat i 10 [keep/only collect [repeat j 10 [keep false]]]]
+    a: copy grid/1
+    b: copy grid/10
+    c: collect [keep/only b keep grid keep/only a]
+]
+
+update-all: does [
+	do iterate
+	refresh canvas/draw 
+	do sync-grids
+]
+
+cmds: make block! 500
+
+view [
+	size 800x600
+	canvas: base 780x580 draw cmds rate 30 
+	on-time [update-all]
+	do [update-all]
+]
