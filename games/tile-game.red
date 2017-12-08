@@ -14,10 +14,6 @@ Red [
 				 Original R2 code (with helpful comments) found in 
 				 http://re-bol.com/rebol.html#section-6.3
 				 (thanks Nick Antonaccio!).
-				 This minimal version starts in the ordered configuration,
-				 so preferably have someone else "mess it up" for you first.
-				 A version which allows to randomize the order of the tiles
-				 is in the making.
 			}
   Tabs: 4
 ]
@@ -41,7 +37,7 @@ Red [
 
 ; This version accounts for OS padding that may be applied to the button style, and which
 ; may vary by OS.
-view/tight [
+view/no-wait wnd: layout/tight [
 	title "Tile game"
 	style piece: button 60x60 [
 		temp: face/offset - empty/offset
@@ -59,3 +55,22 @@ view/tight [
 	piece "9"  piece "10" piece "11" piece "12" return
 	piece "13" piece "14" piece "15" empty: piece ""
 ]
+
+randomize: func [
+	"Reseed the random number generator."
+	/with seed "date, time, and integer values are used directly; others are converted."
+][
+	random/seed either find [date! time! integer!] type?/word seed [seed] [
+		to-integer checksum form any [seed now/precise] 'sha1
+	]
+]
+
+randomize-game: has [offs] [
+	offs: copy []
+	foreach b wnd/pane [append offs b/offset]
+	randomize
+	foreach b wnd/pane [b/offset: take random offs]
+]
+
+randomize-game
+do-events
