@@ -11,7 +11,7 @@ json: context [
 	exponent:	 charset "eE"
 	sign:		 charset "+-"
 	digit-nz:	 charset "123456789"
-	digit:		 union digit-nz "0"
+	digit:		 union digit-nz charset "0"
 	hexa:		 union digit charset "ABCDEFabcdef"
 	blank:		 charset " ^(09)^(0A)^(0D)"
 	ws:		 [any blank]
