@@ -46,7 +46,7 @@ json: context [
 		| array
 	]
 
-	number: [s: opt #"-" some digit opt [dot some digit opt [exponent sign 1 3 digit]] e:]
+	number: [s: opt #"-" some digit opt [dot some digit] opt [exponent opt sign 1 3 digit] e:]
 	
 	string: [dbl-quote s: any [#"\" [quoted-char | #"u" 4 hexa] | dbl-quote break | skip] e:]
 	
