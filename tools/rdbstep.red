@@ -1,8 +1,8 @@
 Red [
     Title: "Red debug step script"
     File: %rdbstep.red
-    Date:  30-Apr-2019
-    Version: 2.0
+    Date:  28-Oct-2019
+    Version: 2.1
     Author: "JLM cyclo07"
     Purpose: "Debug step by step a Red script (tool for do/next)."
     Usage: "From REPL : do/args %rdbstep.red <Red Script>"
@@ -18,25 +18,69 @@ Red [
 	History: [
 		1.0 "Only next step overall"
 		2.0 "Add commands step into and where"
+		2.1 {Enable replay using a file for input/output
+             Values for rdbstep/dbgout/replay are 'no (default), 'new or 'yes
+                    'no : not to save input/output
+                    'new: to save input/output
+                    'yes: to replay input from input file and to save output }
 	]
 ]
 rdbstep: context [
+   dbgout: object [
+      linp: i: 0
+      outfile: %p_out.txt
+      infile: %p_in.txt
+      replay: 'no ; enable values are 'no 'yes 'new
+      out_prin: function [ arg /extern replay outfile] [
+         prin arg
+         if any [ replay = 'yes replay = 'new ] [
+            write/append outfile arg
+         ]
+      ]
+      out_print: function [ arg /extern replay outfile] [
+         print arg
+         if any [ replay = 'yes replay = 'new ] [
+            write/append outfile append arg newline
+         ]
+      ]
+      in_ask: function [ arg /extern replay i linp infile] [
+         switch replay [
+            no      [ cmd: ask arg ]
+            yes     [
+                        if i = 0 [
+                           linp: read/lines infile
+                        ]
+                        i: i + 1
+                        cmd: pick linp i
+            ]
+            new [
+                        cmd: ask arg
+                        if i = 0 [
+                           delete infile
+                        ]
+                        i: 1
+                        write/append infile append copy cmd newline
+            ]
+         ]
+         cmd
+      ]
+   ] ;-- end object dbgout
    trc: false
    blevl: compose/deep [ 0 [(to-logic false)] ]
    lret: copy ""
    flist: function [ redsrc [block!] upsrc [block!] /range iprev [integer!] /where ][
       if where [
          foreach ins upsrc [
-            prin ">"
-            print ins
+            dbgout/out_prin ">"
+            dbgout/out_print form ins
          ]
       ]
       if range [
          unless iprev = (index? redsrc) [
             bl: split mold/only copy/deep/part redsrc (iprev - (index? redsrc)) newline
             repeat i length? bl [
-               prin "  "
-               print pick bl i
+               dbgout/out_prin "  "
+               dbgout/out_print pick bl i
             ]
          ]
       ]
@@ -46,19 +90,19 @@ rdbstep: context [
             remove bl
          ]
       ]
-      prin "->"
-      print pick bl 1
+      dbgout/out_prin "->"
+      dbgout/out_print pick bl 1
       if range [
          len: min 10 length? bl
          repeat i ( len - 1 ) [
-            prin "  "
-            print pick bl ( i + 1 )
+            dbgout/out_prin "  "
+            dbgout/out_print pick bl ( i + 1 )
          ]
          if len = length? bl [
             either ( length? upsrc ) = 0 [
-               print "[EOB]"
+               dbgout/out_print "[EOB]"
             ][
-               print [ "[EOB] level" length? upsrc ]
+               dbgout/out_print form reduce [ "[EOB] level" length? upsrc ]
             ]
          ]
       ]
@@ -162,11 +206,11 @@ q(uit)
                   if bfin [
                      bfin: false
                      if all [ head? redsrc (length? upsrc) <> 0 ] [
-                        print [ ">" last upsrc ] ; -- print first step into 
+                        dbgout/out_print form reduce [ ">" last upsrc ] ; -- print first step into 
                      ]
                      flist redsrc []
                   ]
-                  icmd: ask "(rdbstep) "
+                  icmd: dbgout/in_ask "(rdbstep) "
                   either (length? icmd) = 0 [ 
                      bfin: true
                   ][
@@ -325,7 +369,7 @@ q(uit)
                ][
                   do reduce [ to set-path! bfun/2 'func spec-of get bfun/2 copy/deep bt ]
                ]
-               print [ "--Call" bfun/2 "--" ]
+               dbgout/out_print form reduce [ "--Call" mold bfun/2 "--" ]
                if rdbstep/trc [
                   print "<Save before calling>" probe fblbefore
                ]
@@ -365,7 +409,7 @@ q(uit)
                ]
                ret: none
                if error? err: try [ ret: do/next redsrc 'redsrc ] [
-                  unless err/id = 'need-value [ print [ "Error Id:" err/id ] print err ]
+                  unless err/id = 'need-value [ dbgout/out_print form reduce [ "Error Id:" err/id ] dbgout/out_print form err ]
                   if rdbstep/trc [
                      print [ "<do/next error Id:>" err/id "index" i index? redsrc ]
                      probe redsrc
@@ -387,7 +431,7 @@ q(uit)
                      ][
                         do reduce [ to set-path! i 'func spec-of get i copy/deep b ]
                      ]
-                     print [ "--Return" i "--" ]
+                     dbgout/out_print form reduce [ "--Return" mold i "--" ]
                   ]
                ]
             ] [
@@ -446,8 +490,15 @@ q(uit)
             :ret
          ]
    ]
-   run: function [ rsrc [file! url! string! block!] /extern bstep brst bquit] [
+   run: function [ rsrc [file! url! string! block!] /replay wrep [word!] /extern bstep brst bquit] [
       upsrc: copy []
+      either replay [
+         dbgout/replay: wrep
+         dbgout/i: 0
+         delete dbgout/outfile
+      ][
+         dbgout/replay: 'no
+      ]
       either any [file? rsrc url? rsrc] [
          redsrc: load rsrc 
          append upsrc mold rsrc
@@ -464,16 +515,18 @@ q(uit)
             break
          ]
       ]
-      prin "rdbstep End"
+      dbgout/out_prin "rdbstep End"
       either (length? upsrc) = 0 [
-         print ""
+         dbgout/out_print ""
       ][
-         print ["(" upsrc/1 ")"]
+         dbgout/out_print form reduce ["(" upsrc/1 ")"]
       ]
       either none? r [] [ r ]
    ]
 ] ; end rdbstep context
 ;print system/script/args
 ;rdbstep/trc: true ;-- to enable some traces
-rdbstep/run system/script/args
+rdbstep/run system/script/args  ;-- default usage
+;rdbstep/run/replay system/script/args 'new  ;-- save input/output in files %p_in.txt/%p_out.txt
+;rdbstep/run/replay system/script/args 'yes   ;-- replay input file %p_in.txt and save output in file %p_out.txt
 
