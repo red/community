@@ -1,4 +1,8 @@
-Red []
+Red [
+  Author: ["Greg Tewalt]
+  File: %help-writer.red
+  Tabs: 4
+]
 
 ; #include %/<your-path/help.red       ;  to compile
 
