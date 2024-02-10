@@ -13,7 +13,7 @@ forskip: func ['series skipn body /local s] [
    ]
 ]
 
-dynamic-words: copy #()
+dynamic-words: copy #[]
 
 ; gets dynamic word value
 dynamic: func ['word /safe /local binds] [

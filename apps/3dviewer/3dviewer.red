@@ -162,9 +162,9 @@ loadASCfile: function [
 	"Load ASC file - 3D Studio ascii format"
 	ascfile			[file!]
 ] [
-	if not exists? ascfile [ return reduce [#[false] MSG_ERR_FILENOTFOUND] ]
+	if not exists? ascfile [ return reduce [#(false) MSG_ERR_FILENOTFOUND] ]
 	buffer: read ascfile
-	if (length? buffer) = 0 [ return reduce [#[false] MSG_ERR_BUFFEREMPTY] ]
+	if (length? buffer) = 0 [ return reduce [#(false) MSG_ERR_BUFFEREMPTY] ]
 
 	ws: charset reduce [space tab cr lf newline]
 	dstring: charset {"}
@@ -226,7 +226,7 @@ loadASCfile: function [
 			]
 	]
 
-	[#[true] none]
+	[#(true) none]
 ]
 
 
